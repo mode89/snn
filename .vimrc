@@ -1,1 +1,1 @@
-map \r :!clear && python3 %
+map \b :!clear && behave 
