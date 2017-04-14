@@ -1,10 +1,12 @@
 import random
 
+NEURON_NUM = 100
+
 class Neuron:
 
     def __init__(self):
         self.potential = 0.0
-        self.weight = [random.random() for i in range(10)]
+        self.weight = [random.random() for i in range(NEURON_NUM)]
         self.output = 0.0
 
     def integrate(self, neurons):
@@ -18,10 +20,13 @@ class Neuron:
         else:
             self.output = 0.0
 
+    def spiking(self):
+        return self.output == 1.0
+
 class Network:
 
     def __init__(self):
-        self.neurons = [Neuron() for i in range(10)]
+        self.neurons = [Neuron() for i in range(NEURON_NUM)]
 
     def step(self):
         self.integrate()
@@ -34,3 +39,19 @@ class Network:
     def fire(self):
         for neuron in self.neurons:
             neuron.fire()
+
+class Monitor:
+
+    def __init__(self, network):
+        self.network = network
+        self.counter = 0
+        self.x = list()
+        self.y = list()
+
+    def step(self):
+        for i in range(NEURON_NUM):
+            neuron = self.network.neurons[i]
+            if neuron.spiking():
+                self.x.append(self.counter)
+                self.y.append(i)
+        self.counter += 1
