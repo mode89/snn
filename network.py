@@ -6,7 +6,8 @@ class Neuron:
 
     def __init__(self):
         self.potential = random.random()
-        self.weight = [random.random() for i in range(NEURON_NUM)]
+        self.weight = [random.random() / NEURON_NUM
+            for i in range(NEURON_NUM)]
         self.output = 0.0
 
     def integrate(self, neurons):
