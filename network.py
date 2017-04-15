@@ -18,7 +18,7 @@ class Neuron:
             self.potential = 0.0
             self.output = 1.0
         else:
-            self.output = 0.0
+            self.output = random.uniform(0.0, 1 / NEURON_NUM)
 
     def spiking(self):
         return self.output == 1.0
