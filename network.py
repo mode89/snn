@@ -5,7 +5,7 @@ NEURON_NUM = 100
 class Neuron:
 
     def __init__(self):
-        self.potential = 0.0
+        self.potential = random.random()
         self.weight = [random.random() for i in range(NEURON_NUM)]
         self.output = 0.0
 
