@@ -1,9 +1,9 @@
 from network import Monitor, Network
 import matplotlib.pyplot as plt
 
-@given("network")
-def step_impl(context):
-    context.network = Network()
+@given("network with {neuron_num:d} neurons")
+def step_impl(context, neuron_num):
+    context.network = Network(neuron_num)
 
 @given("step")
 def step_impl(context):
