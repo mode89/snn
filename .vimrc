@@ -1,1 +1,2 @@
-map \b :!clear && behave 
+map \br :!clear && behave 
+map \bw :!clear && behave --tags=wip
