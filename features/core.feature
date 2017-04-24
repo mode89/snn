@@ -5,10 +5,10 @@ Feature: Core functionality
 
     Scenario: Step network
         Given network with 100 neurons
-        And step
+        And update
 
     Scenario: Plot
-        Given network with 100 neurons
+        Given network with 1000 neurons
         And monitor
-        When step 1000 times
+        When update 1000 times
         Then plot output

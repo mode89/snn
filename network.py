@@ -1,91 +1,58 @@
 import random
-import weakref
-
-class Synapse:
-
-    def output(self):
-        return self.weight * self.pre().output
-
-    def update_weight(self):
-        if self.pre() is not self.post():
-            if self.post().fired():
-                self.weight += self.pre().spike_trace * 0.01
-            elif self.pre().fired():
-                self.weight -= self.post().spike_trace * 0.01
-
-class Neuron:
-
-    def __init__(self):
-        self.spike_trace = 0.0
-
-    def integrate(self):
-        for synapse in self.synapses:
-            self.potential += synapse.output()
-        self.update_spike_trace()
-
-    def update_spike_trace(self):
-        if self.spike_trace > 0.0:
-            self.spike_trace -= 0.1
-        else:
-            self.spike_trace = 0.0
-
-    def fire(self):
-        if self.potential > 1.0:
-            self.potential = 0.0
-            self.output = 1.0
-            self.spike_trace = 1.0
-        else:
-            self.output = random.uniform(0.0, 1 / len(self.synapses))
-
-    def update_weights(self):
-        for synapse in self.synapses:
-            synapse.update_weight()
-
-    def fired(self):
-        return self.output == 1.0
+import numpy
 
 class Network:
 
-    def __init__(self, neuron_num):
-        self.neurons = [Neuron() for i in range(neuron_num)]
-        for neuron in self.neurons:
-            neuron.potential = random.random()
-            neuron.output = 0.0
-            neuron.synapses = [Synapse() for i in range(neuron_num)]
-            for synapse, pre_neuron in zip(neuron.synapses, self.neurons):
-                synapse.pre = weakref.ref(pre_neuron)
-                synapse.post = weakref.ref(neuron)
-                synapse.weight = random.random() / neuron_num
+    def __init__(self, neuronNum):
+        self.N = neuronNum
+        self.Ne = int(self.N * 0.8)
+        self.Ni = self.N - self.Ne
 
-    def step(self):
-        self.integrate()
-        self.fire()
-        self.update_weights()
+        re = numpy.random.rand(self.Ne)
+        ri = numpy.random.rand(self.Ni)
 
-    def integrate(self):
-        for neuron in self.neurons:
-            neuron.integrate()
+        self.a = numpy.concatenate(
+            (0.02 * numpy.ones(self.Ne), 0.02 + 0.08 * ri))
+        self.b = numpy.concatenate(
+            (0.2 * numpy.ones(self.Ne), 0.25 - 0.05 * ri))
+        self.c = numpy.concatenate(
+            (-65 + 15 * numpy.square(re), -65 * numpy.ones(self.Ni)))
+        self.d = numpy.concatenate(
+            (8 - 6 * numpy.square(re), 2 * numpy.ones(self.Ni)))
 
-    def fire(self):
-        for neuron in self.neurons:
-            neuron.fire()
+        self.S = numpy.concatenate((
+            0.5 * numpy.random.rand(self.N, self.Ne),
+            -1.0 * numpy.random.rand(self.N, self.Ni)),
+            axis=1)
 
-    def update_weights(self):
-        for neuron in self.neurons:
-            neuron.update_weights()
+        self.v = -65 * numpy.ones(self.N)
+        self.u = numpy.multiply(self.b, self.v)
+
+    def update(self):
+        I = numpy.concatenate((
+            5 * numpy.random.randn(self.Ne),
+            2 * numpy.random.randn(self.Ni)))
+        self.fired = numpy.argwhere(self.v >= 30)
+        print(self.fired)
+        if self.fired.size > 0:
+            self.v[self.fired] = self.c[self.fired]
+            self.u[self.fired] += self.d[self.fired]
+            I += numpy.sum(self.S[:, numpy.transpose(self.fired)[0]], 1)
+        self.v += \
+            0.04 * numpy.square(self.v) + 5 * self.v + 140 - self.u + I
+        self.u += \
+            numpy.multiply(self.a, numpy.multiply(self.b, self.v) - self.u)
 
 class Monitor:
 
     def __init__(self, network):
         self.network = network
         self.counter = 0
-        self.x = list()
-        self.y = list()
+        self.x = []
+        self.y = []
 
-    def step(self):
-        for i in range(len(self.network.neurons)):
-            neuron = self.network.neurons[i]
-            if neuron.fired():
-                self.x.append(self.counter)
-                self.y.append(i)
+    def update(self):
+        for firing in self.network.fired:
+            self.x.append(self.counter)
+            self.y.append(firing[0])
         self.counter += 1

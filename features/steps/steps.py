@@ -5,20 +5,20 @@ import matplotlib.pyplot as plt
 def step_impl(context, neuron_num):
     context.network = Network(neuron_num)
 
-@given("step")
+@given("update")
 def step_impl(context):
-    context.network.step()
+    context.network.update()
 
 @given("monitor")
 def step_impl(context):
     context.monitor = Monitor(context.network)
 
-@when("step {n:d} times")
+@when("update {n:d} times")
 def step_impl(context, n):
     for i in range(n):
-        context.network.step()
+        context.network.update()
         if hasattr(context, "monitor"):
-            context.monitor.step()
+            context.monitor.update()
 
 @then("plot output")
 def step_impl(context):
