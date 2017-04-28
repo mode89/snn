@@ -42,7 +42,7 @@ s = numpy.concatenate((
 v = -65 * numpy.ones(N)
 u = 0.2 * v
 
-firings = numpy.empty((0, 2), dtype=numpy.int)
+firings = []
 
 for t in range(T):
     print(t)
@@ -51,35 +51,31 @@ for t in range(T):
     I[int(N * random.random())] = 20.0
 
     fired = numpy.argwhere(v >= 30)
-
     if fired.size > 0:
-        firings = numpy.vstack((
-            firings,
-            numpy.hstack((
-                t * numpy.ones_like(fired),
-                fired
-            ))
-        ))
-
         v[fired] = -65.0
         u[fired] = u[fired] + d[fired]
 
-    k = firings.shape[0] - 1
-    while k >= 0 and firings[k, 0] > (t - D):
-        time, f_index = firings[k]
-        synapses = delays[f_index][t - time]
-        if len(synapses) > 0:
-            ind = post[f_index, synapses]
-            I[ind] += s[f_index, synapses]
-        k -= 1
+    firings.append(fired)
+    for time in range(min(D, len(firings))):
+        for fired_i in firings[t - time]:
+            synapses = delays[fired_i][time]
+            if len(synapses) > 0:
+                ind = post[fired_i, synapses]
+                I[ind] += s[fired_i, synapses]
 
     for i in range(2):
         v += 0.5 * ((0.04 * v + 5.0) * v + 140.0 - u + I)
     u += a * (0.2 * v - u)
 
+x = []
+y = []
+for t in range(T):
+    for fired in firings[t]:
+        x.append(t)
+        y.append(fired)
+
 plt.scatter(
-    firings[:,0],
-    firings[:,1],
+    x, y,
     color="black",
     marker=".")
 plt.show()
