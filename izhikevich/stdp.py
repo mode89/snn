@@ -30,14 +30,16 @@ for i in range(Ne, N):
 delays = [[[] for i in range(D)] for j in range(N)]
 for i in range(Ne):
     for j in range(M):
-        delays[i][int(D * random.random())].append(j)
+        delays[i][int(D * random.random())].append(post[i,j])
 for i in range(Ne, N):
-    delays[i][0] = range(M)
+    for j in range(M):
+        delays[i][0].append(post[i,j])
 
-s = numpy.concatenate((
-    6 * numpy.ones((Ne, M)),
-    -5 * numpy.ones((Ni, M))
-))
+s = numpy.zeros((N, N))
+for i in range(Ne):
+    s[i, post[i,:]] = 6.0
+for i in range(Ne, N):
+    s[i, post[i,:]] = -5.0
 
 v = -65 * numpy.ones(N)
 u = 0.2 * v
@@ -57,11 +59,10 @@ for t in range(T):
 
     firings.append(fired)
     for time in range(min(D, len(firings))):
-        for fired_i in firings[t - time]:
-            synapses = delays[fired_i][time]
-            if len(synapses) > 0:
-                ind = post[fired_i, synapses]
-                I[ind] += s[fired_i, synapses]
+        for fired_neuron in firings[t - time]:
+            post_neurons = delays[fired_neuron][time]
+            if len(post_neurons) > 0:
+                I[post_neurons] += s[fired_neuron, post_neurons]
 
     for i in range(2):
         v += 0.5 * ((0.04 * v + 5.0) * v + 140.0 - u + I)
