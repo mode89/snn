@@ -57,6 +57,13 @@ firings = []
 
 STDP = numpy.zeros(N)
 
+class data:
+    n0 = 700
+    n1 = post[n0, 0]
+    stdp0 = []
+    stdp1 = []
+    s01 = []
+
 for t in range(T):
     print(t)
 
@@ -95,6 +102,10 @@ for t in range(T):
             s[pre_neurons, fired_neuron] + STDP[pre_neurons])
     STDP *= 0.95
 
+    data.stdp0.append(STDP[data.n0])
+    data.stdp1.append(STDP[data.n1])
+    data.s01.append(s[data.n0, data.n1])
+
 x = []
 y = []
 for t in range(T):
@@ -102,8 +113,19 @@ for t in range(T):
         x.append(t)
         y.append(fired)
 
-plt.scatter(
-    x, y,
-    color="black",
-    marker=".")
+plt.subplot(311)
+plt.scatter(x, y, color="black", marker=".")
+plt.xlim(0, T)
+plt.ylim(0, N)
+
+plt.subplot(312)
+plt.plot(
+    range(T), data.stdp0,
+    range(T), data.stdp1)
+plt.xlim(0, T)
+
+plt.subplot(313)
+plt.plot(range(T), data.s01)
+plt.xlim(0, T)
+
 plt.show()
