@@ -27,6 +27,11 @@ for i in range(Ne):
 for i in range(Ne, N):
     post[i,:] = random.sample(range(Ne), M)
 
+pre = [[] for i in range(N)]
+for i in range(Ne):
+    for j in range(M):
+        pre[post[i,j]].append(i)
+
 delays = [[[] for i in range(D)] for j in range(N)]
 for i in range(Ne):
     for j in range(M):
@@ -45,6 +50,8 @@ v = -65 * numpy.ones(N)
 u = 0.2 * v
 
 firings = []
+
+STDP = numpy.zeros(N)
 
 for t in range(T):
     print(t)
@@ -67,6 +74,17 @@ for t in range(T):
     for i in range(2):
         v += 0.5 * ((0.04 * v + 5.0) * v + 140.0 - u + I)
     u += a * (0.2 * v - u)
+
+    STDP[fired] = 1.0
+    for fired_neuron in fired:
+        if fired_neuron < Ne:
+            post_neurons = post[fired_neuron,:]
+            s[fired_neuron, post_neurons] = numpy.maximum(0.0,
+                s[fired_neuron, post_neurons] - 1.2 * STDP[post_neurons])
+        pre_neurons = pre[fired_neuron]
+        s[pre_neurons, fired_neuron] = numpy.minimum(10.0,
+            s[pre_neurons, fired_neuron] + STDP[pre_neurons])
+    STDP *= 0.95
 
 x = []
 y = []
