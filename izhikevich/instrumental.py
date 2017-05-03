@@ -63,24 +63,23 @@ sd = numpy.zeros((N, N))
 DA = 0
 rew = []
 
-ST = 100
-stimulus = [[] for i in range(ST)]
-for i in range(ST):
-    stimulus[i] = random.sample(range(N), 50)
-next_stimuli = 0
-s_mean_indices = [i for i in range(N) if i not in stimulus[0]]
+S = range(50)
+A = range(50, 100)
+B = range(100, 150)
+
+s[S, A] = 0.0
+s[S, B] = 0.0
 
 class data:
     firings = []
-    stimulus = []
-    s0_mean = []
-    s_mean = []
+    s_A = [(0, numpy.sum(s[S, A]))]
+    s_B = [(0, numpy.sum(s[S, B]))]
 
 plt.subplot(211)
 scatter = plt.scatter([], [], color="black", marker=".")
 
 plt.subplot(212)
-s_mean_line, s0_mean_line = plt.plot([], [], [], [])
+line_A, line_B, = plt.plot([], [], [], [])
 
 for sec in range(T):
 
@@ -95,25 +94,27 @@ for sec in range(T):
         I = 13.0 * numpy.array(
             [random.uniform(-0.5, 0.5) for i in range(N)])
 
-        # issuse random stimuli
-        if t == next_stimuli:
-            print("Stimuli")
-            next_stimuli = t + random.randint(100, 300)
-            stimuli = random.randrange(0, ST)
-            neurons = stimulus[stimuli]
-            I[neurons] = 17.0
-
-            # reward stimuli with index 0
-            if stimuli == 0:
-                print("Reward")
-                rew.append(t + random.randrange(0, 1000))
-                data.stimulus.append(t)
+        # issue a stimulus
+        if t % 10000 == 0:
+            I[S] = 20.0
+            count_period = range(t + 1, t + 20)
+            count_A = 0
+            count_B = 0
 
         # identify fired neurons
         fired = numpy.argwhere(v >= 30)
         if fired.size > 0:
             v[fired] = -65.0
             u[fired] = u[fired] + d[fired]
+
+        # count neurons in group A an B
+        if t in count_period:
+            count_A += numpy.intersect1d(fired, A).size
+            count_B += numpy.intersect1d(fired, B).size
+            if t == count_period[-1]:
+                if count_A > count_B:
+                    print("Reward")
+                    rew.append(t + random.randrange(0, 1000))
 
         # deliver spikes to post-synaptic neurons
         firings.appendleft(fired)
@@ -152,10 +153,6 @@ for sec in range(T):
 
         # save plotting data
         data.firings.append(fired)
-        data.s_mean.append(
-            numpy.sum(s[s_mean_indices,0:Ne]) / ((N - 50) * M))
-        data.s0_mean.append(
-            numpy.sum(s[stimulus[0],0:Ne]) / (50 * M))
 
     # Update plots
 
@@ -172,20 +169,21 @@ for sec in range(T):
     plt.xlim(sec * 1000, sec * 1000 + 1000)
     plt.ylim(0, N)
 
-    # plot rewarded stimulus
-    for st in data.stimulus:
-        plt.axvline(st, color="red")
-
     # plot mean value of synaptic strength
-    s_mean_ax = plt.subplot(212)
-    s_mean_line.set_data(
-        range(sec * 1000 + 1000), data.s_mean)
-    s0_mean_line.set_data(
-        range(sec * 1000 + 1000), data.s0_mean)
 
-    s_mean_ax.relim()
-    s_mean_ax.set_xlim(0, sec * 1000 + 1000)
-    s_mean_ax.autoscale_view()
+    s_ax = plt.subplot(212)
+
+    data.s_A.append((sec + 1, numpy.sum(s[S, A])))
+    data.s_B.append((sec + 1, numpy.sum(s[S, B])))
+    line_A.set_data(
+        [c[0] for c in data.s_A],
+        [c[1] for c in data.s_A])
+    line_B.set_data(
+        [c[0] for c in data.s_B],
+        [c[1] for c in data.s_B])
+
+    s_ax.relim()
+    s_ax.autoscale_view()
 
     # update UI
     plt.ion()
