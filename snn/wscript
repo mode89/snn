@@ -16,9 +16,10 @@ def build(bld):
         target="snn",
         features="cxx cxxshlib pyext",
         source=[
-            "source/module.cpp",
             "source/network.cpp",
-            "source/numpy_initializer.cpp",
+            "source/python/module.cpp",
+            "source/python/network.cpp",
+            "source/python/numpy_initializer.cpp",
         ],
         includes=[
             bld.path.find_dir("include"),

@@ -1,14 +1,18 @@
 #ifndef __SNN_NETWORK_H__
 #define __SNN_NETWORK_H__
 
-#include <boost/numpy.hpp>
-
 namespace snn {
 
-    namespace p = boost::python;
-    namespace np = boost::numpy;
+    class network
+    {
+    public:
+        network(int N);
 
-    np::ndarray find_fired(np::ndarray &);
+    private:
+        int m_N;
+        int m_Ne;
+        int m_Ni;
+    };
 
 } // namespace snn
 
