@@ -23,6 +23,7 @@ namespace snn { namespace python {
         np::ndarray m_c;
         np::ndarray m_d;
         np::ndarray m_s;
+        np::ndarray m_I;
 
     public:
         network(int N);

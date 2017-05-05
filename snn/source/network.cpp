@@ -11,6 +11,7 @@ namespace snn {
         , m_c(N)
         , m_d(N)
         , m_s(N, N)
+        , m_I(N)
     {
         // initialize vector a
         for (int i = 0; i < m_Ne; ++ i)

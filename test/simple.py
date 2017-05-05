@@ -16,7 +16,7 @@ u = numpy.multiply(network.b, v)
 firings = [[], []]
 
 for t in range(1000):
-    I = 13 * (numpy.random.rand(N, 1) - 0.5)
+    network.I = 13 * (numpy.random.rand(N, 1) - 0.5)
     fired = numpy.argwhere(v >= 30)[:,0]
     if fired.size > 0:
         for firing in fired:
@@ -24,8 +24,8 @@ for t in range(1000):
             firings[1].append(firing)
         v[fired] = network.c[fired]
         u[fired] += network.d[fired]
-        I += numpy.sum(network.s[:, fired], 1).reshape((N, 1))
-    v = v + (0.04 * numpy.square(v) + 5 * v + 140 - u + I)
+        network.I += numpy.sum(network.s[:, fired], 1).reshape((N, 1))
+    v = v + (0.04 * numpy.square(v) + 5 * v + 140 - u + network.I)
     u = u + numpy.multiply(network.a, numpy.multiply(network.b, v) - u)
 
 plt.scatter(
