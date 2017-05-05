@@ -1,12 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy
 import snn
+import pdb
 
 numpy.random.seed(0)
 
 N = 1000
-Ne = N * 0.8
-Ni = N - Ne
 
 network = snn.network(N)
 

@@ -9,8 +9,6 @@ namespace snn { namespace python {
     namespace p = boost::python;
     namespace np = boost::numpy;
 
-    np::ndarray find_fired(np::ndarray &);
-
     class network: public snn::network
     {
     private:
