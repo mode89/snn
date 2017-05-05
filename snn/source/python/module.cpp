@@ -10,6 +10,9 @@ BOOST_PYTHON_MODULE(snn)
         .def_readonly("c", &snn::python::network::m_c)
         .def_readonly("d", &snn::python::network::m_d)
         .def_readwrite("s", &snn::python::network::m_s)
+        .def_readwrite("v", &snn::python::network::m_v)
+        .def_readwrite("u", &snn::python::network::m_u)
         .def_readwrite("I", &snn::python::network::m_I)
+        .def("update_potentials", &snn::python::network::update_potentials)
     ;
 }

@@ -11,6 +11,8 @@ namespace snn {
         , m_c(N)
         , m_d(N)
         , m_s(N, N)
+        , m_v(N)
+        , m_u(N)
         , m_I(N)
     {
         // initialize vector a
@@ -41,6 +43,16 @@ namespace snn {
             for (int j = m_Ne; j < m_N; ++ j)
                 m_s(i, j) = -0.5;
         }
+
+        // initialize vectors v and u
+        m_v = m_c;
+        m_u = m_b % m_v;
+    }
+
+    void network::update_potentials()
+    {
+        m_v += ((0.04 * m_v + 5.0) % m_v + 140.0 - m_u + m_I);
+        m_u += (m_a % (m_b % m_v - m_u));
     }
 
 } // namespace snn

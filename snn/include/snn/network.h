@@ -8,6 +8,9 @@ namespace snn {
     class network
     {
     public:
+        void update_potentials();
+
+    public:
         network(int N);
 
     protected:
@@ -19,6 +22,8 @@ namespace snn {
         arma::vec m_c;
         arma::vec m_d;
         arma::mat m_s;
+        arma::vec m_v;
+        arma::vec m_u;
         arma::vec m_I;
     };
 
