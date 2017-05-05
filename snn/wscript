@@ -23,6 +23,7 @@ def build(bld):
         ],
         includes=[
             bld.path.find_dir("include"),
+            "/opt/Armadillo/include",
         ],
         lib=[
             "boost_numpy",
