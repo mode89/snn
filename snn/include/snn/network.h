@@ -2,12 +2,14 @@
 #define __SNN_NETWORK_H__
 
 #include <armadillo>
+#include <vector>
 
 namespace snn {
 
     class network
     {
     public:
+        void process_firings();
         void update_potentials();
 
     public:
@@ -25,6 +27,7 @@ namespace snn {
         arma::vec m_v;
         arma::vec m_u;
         arma::vec m_I;
+        std::vector<int> m_fired;
     };
 
 } // namespace snn

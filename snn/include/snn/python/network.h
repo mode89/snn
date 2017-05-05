@@ -28,6 +28,9 @@ namespace snn { namespace python {
         np::ndarray m_I;
 
     public:
+        np::ndarray get_fired();
+
+    public:
         network(int N);
     };
 

@@ -28,4 +28,14 @@ namespace snn { namespace python {
     {
     }
 
+    np::ndarray network::get_fired()
+    {
+        return np::from_data(
+            m_fired.data(),
+            np::dtype::get_builtin<int>(),
+            p::make_tuple(m_fired.size()),
+            p::make_tuple(sizeof(int)),
+            m_numpy_memory_owner);
+    }
+
 }} // namespace snn::python
