@@ -10,10 +10,6 @@ Ni = N - Ne
 
 network = snn.network(N)
 
-S = numpy.concatenate((
-    0.5 * numpy.random.rand(N, Ne),
-    -1.0 * numpy.random.rand(N, Ni)), axis=1)
-
 v = -65 * numpy.ones((N, 1))
 u = numpy.multiply(network.b, v)
 
@@ -28,7 +24,7 @@ for t in range(1000):
             firings[1].append(firing)
         v[fired] = network.c[fired]
         u[fired] += network.d[fired]
-        I += numpy.sum(S[:, fired], 1).reshape((N, 1))
+        I += numpy.sum(network.s[:, fired], 1).reshape((N, 1))
     v = v + (0.04 * numpy.square(v) + 5 * v + 140 - u + I)
     u = u + numpy.multiply(network.a, numpy.multiply(network.b, v) - u)
 

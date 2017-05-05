@@ -10,6 +10,7 @@ namespace snn {
         , m_b(N)
         , m_c(N)
         , m_d(N)
+        , m_s(N, N)
     {
         // initialize vector a
         for (int i = 0; i < m_Ne; ++ i)
@@ -30,6 +31,15 @@ namespace snn {
             m_d[i] = 8.0;
         for (int i = m_Ne; i < m_N; ++ i)
             m_d[i] = 2.0;
+
+        // initialize matrix of synaptic strength
+        for (int i = 0; i < m_N; ++ i)
+        {
+            for (int j = 0; j < m_Ne; ++ j)
+                m_s(i, j) = 0.25;
+            for (int j = m_Ne; j < m_N; ++ j)
+                m_s(i, j) = -0.5;
+        }
     }
 
 } // namespace snn

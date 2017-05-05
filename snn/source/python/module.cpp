@@ -9,5 +9,6 @@ BOOST_PYTHON_MODULE(snn)
         .def_readonly("b", &snn::python::network::m_b)
         .def_readonly("c", &snn::python::network::m_c)
         .def_readonly("d", &snn::python::network::m_d)
+        .def_readwrite("s", &snn::python::network::m_s)
     ;
 }

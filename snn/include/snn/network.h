@@ -18,6 +18,7 @@ namespace snn {
         arma::vec m_b;
         arma::vec m_c;
         arma::vec m_d;
+        arma::mat m_s;
     };
 
 } // namespace snn

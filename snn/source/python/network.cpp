@@ -21,6 +21,7 @@ namespace snn { namespace python {
         , NDARRAY_MEMBER(m_b)
         , NDARRAY_MEMBER(m_c)
         , NDARRAY_MEMBER(m_d)
+        , NDARRAY_MEMBER(m_s)
     {
     }
 
