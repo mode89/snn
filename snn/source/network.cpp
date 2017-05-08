@@ -53,6 +53,13 @@ namespace snn {
         m_fired.reserve(m_N);
     }
 
+    void network::generate_random_input()
+    {
+        std::uniform_real_distribution<double> dist(-6.5, 6.5);
+        for (int i = 0; i < m_N; ++ i)
+            m_I[i] = dist(m_random_engine);
+    }
+
     void network::process_firings()
     {
         m_fired.clear();

@@ -28,6 +28,9 @@ def build(bld):
         lib=[
             "boost_numpy",
         ],
+        cxxflags=[
+            "-std=c++11",
+        ],
         use=[
             "BOOST",
         ],

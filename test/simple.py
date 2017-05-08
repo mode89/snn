@@ -1,9 +1,5 @@
 import matplotlib.pyplot as plt
-import numpy
 import snn
-import pdb
-
-numpy.random.seed(0)
 
 N = 1000
 
@@ -12,7 +8,7 @@ network = snn.network(N)
 firings = [[], []]
 
 for t in range(1000):
-    network.I[:] = 13 * (numpy.random.rand(N, 1) - 0.5)
+    network.generate_random_input()
     network.process_firings()
     network.update_potentials()
     if network.fired.size > 0:

@@ -14,6 +14,8 @@ BOOST_PYTHON_MODULE(snn)
         .def_readwrite("u", &snn::python::network::m_u)
         .def_readwrite("I", &snn::python::network::m_I)
         .add_property("fired", &snn::python::network::get_fired)
+        .def("generate_random_input",
+            &snn::python::network::generate_random_input)
         .def("update_potentials", &snn::python::network::update_potentials)
         .def("process_firings", &snn::python::network::process_firings)
     ;

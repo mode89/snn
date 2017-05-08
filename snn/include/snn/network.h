@@ -2,6 +2,7 @@
 #define __SNN_NETWORK_H__
 
 #include <armadillo>
+#include <random>
 #include <vector>
 
 namespace snn {
@@ -9,6 +10,7 @@ namespace snn {
     class network
     {
     public:
+        void generate_random_input();
         void process_firings();
         void update_potentials();
 
@@ -16,6 +18,7 @@ namespace snn {
         network(int N);
 
     protected:
+        std::default_random_engine m_random_engine;
         int m_N;
         int m_Ne;
         int m_Ni;
