@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy
 import random
+import snn
 
 random.seed(0)
 
@@ -12,14 +13,7 @@ Ni = N - Ne
 M = int(N * 0.1)
 D = 20
 
-a = numpy.concatenate((
-    0.02 * numpy.ones((Ne, 1)),
-    0.1 * numpy.ones((Ni, 1))
-))
-d = numpy.concatenate((
-    8 * numpy.ones((Ne, 1)),
-    2 * numpy.ones((Ni, 1))
-))
+network = snn.network(N)
 
 post = numpy.empty((N, M), dtype=numpy.int)
 for i in range(Ne):
@@ -47,8 +41,8 @@ firings = numpy.empty((0, 2), dtype=numpy.int)
 for t in range(T):
     print(t)
 
-    I = numpy.zeros((N, 1))
-    I[int(N * random.random())] = 20.0
+    network.I[:] = numpy.zeros((N, 1))
+    network.I[int(N * random.random())] = 20.0
 
     fired = numpy.argwhere(v >= 30)[:,0]
     fired = fired.reshape((len(fired), 1))
@@ -63,7 +57,7 @@ for t in range(T):
         ))
 
         v[fired] = -65.0
-        u[fired] = u[fired] + d[fired]
+        u[fired] += network.d[fired]
 
     k = firings.shape[0] - 1
     while k >= 0 and firings[k, 0] > (t - D):
@@ -71,12 +65,12 @@ for t in range(T):
         synapses = delays[f_index][t - time]
         if len(synapses) > 0:
             ind = post[f_index, synapses]
-            I[ind] += s[f_index, synapses].reshape((len(ind), 1))
+            network.I[ind] += s[f_index, synapses].reshape((len(ind), 1))
         k -= 1
 
     for i in range(2):
-        v += 0.5 * ((0.04 * v + 5.0) * v + 140.0 - u + I)
-    u += a * (0.2 * v - u)
+        v += 0.5 * ((0.04 * v + 5.0) * v + 140.0 - u + network.I)
+    u += network.a * (0.2 * v - u)
 
 plt.scatter(
     firings[:,0],
