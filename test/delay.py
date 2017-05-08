@@ -33,9 +33,6 @@ s = numpy.concatenate((
     -5 * numpy.ones((Ni, M))
 ))
 
-v = -65 * numpy.ones((N, 1))
-u = 0.2 * v
-
 firings = numpy.empty((0, 2), dtype=numpy.int)
 
 for t in range(T):
@@ -44,7 +41,7 @@ for t in range(T):
     network.I[:] = numpy.zeros((N, 1))
     network.I[int(N * random.random())] = 20.0
 
-    fired = numpy.argwhere(v >= 30)[:,0]
+    fired = numpy.argwhere(network.v >= 30)[:,0]
     fired = fired.reshape((len(fired), 1))
 
     if fired.size > 0:
@@ -56,8 +53,8 @@ for t in range(T):
             ))
         ))
 
-        v[fired] = -65.0
-        u[fired] += network.d[fired]
+        network.v[fired] = -65.0
+        network.u[fired] += network.d[fired]
 
     k = firings.shape[0] - 1
     while k >= 0 and firings[k, 0] > (t - D):
@@ -68,9 +65,7 @@ for t in range(T):
             network.I[ind] += s[f_index, synapses].reshape((len(ind), 1))
         k -= 1
 
-    for i in range(2):
-        v += 0.5 * ((0.04 * v + 5.0) * v + 140.0 - u + network.I)
-    u += network.a * (0.2 * v - u)
+    network.update_potentials()
 
 plt.scatter(
     firings[:,0],
