@@ -19,11 +19,15 @@ namespace snn {
     public:
         network(int N);
 
+    private:
+        void initialize_post_synaptic_connections();
+
     protected:
         std::default_random_engine m_random_engine;
         int m_N;
         int m_Ne;
         int m_Ni;
+        int m_M;
         arma::vec m_a;
         arma::vec m_b;
         arma::vec m_c;
@@ -33,6 +37,7 @@ namespace snn {
         arma::vec m_u;
         arma::vec m_I;
         std::vector<int> m_fired;
+        std::vector<std::vector<int>> m_post;
     };
 
 } // namespace snn

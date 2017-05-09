@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <snn/network.h>
 
 namespace snn {
@@ -6,6 +7,7 @@ namespace snn {
         : m_N(N)
         , m_Ne(N * 0.8)
         , m_Ni(m_N - m_Ne)
+        , m_M(m_N * 0.1)
         , m_a(N)
         , m_b(N)
         , m_c(N)
@@ -15,6 +17,7 @@ namespace snn {
         , m_u(N)
         , m_I(N)
         , m_fired(N)
+        , m_post()
     {
         // initialize vector a
         for (int i = 0; i < m_Ne; ++ i)
@@ -36,6 +39,8 @@ namespace snn {
         for (int i = m_Ne; i < m_N; ++ i)
             m_d[i] = 2.0;
 
+        initialize_post_synaptic_connections();
+
         // initialize matrix of synaptic strength
         for (int i = 0; i < m_N; ++ i)
         {
@@ -51,6 +56,33 @@ namespace snn {
 
         // reserved memory for firings
         m_fired.reserve(m_N);
+    }
+
+    void network::initialize_post_synaptic_connections()
+    {
+        m_post.resize(m_N);
+
+        std::vector<int> all_indices(m_N);
+        std::iota(all_indices.begin(), all_indices.end(), 0);
+
+        for (int i = 0; i < m_Ne; ++ i)
+        {
+            std::shuffle(all_indices.begin(), all_indices.end(),
+                m_random_engine);
+            std::copy_n(all_indices.begin(), m_M,
+                std::back_inserter(m_post[i]));
+        }
+
+        std::vector<int> exitatory_indices(m_Ne);
+        std::iota(exitatory_indices.begin(), exitatory_indices.end(), 0);
+
+        for (int i = m_Ne; i < m_N; ++ i)
+        {
+            std::shuffle(exitatory_indices.begin(),
+                exitatory_indices.end(), m_random_engine);
+            std::copy_n(exitatory_indices.begin(), m_M,
+                std::back_inserter(m_post[i]));
+        }
     }
 
     void network::generate_random_input()
