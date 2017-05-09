@@ -1,3 +1,4 @@
+import collections
 import matplotlib.pyplot as plt
 import numpy
 import random
@@ -24,16 +25,19 @@ for i in range(Ne, N):
 delays = [[[] for i in range(D)] for j in range(N)]
 for i in range(Ne):
     for j in range(M):
-        delays[i][int(D * random.random())].append(j)
+        delays[i][int(D * random.random())].append(post[i,j])
 for i in range(Ne, N):
-    delays[i][0] = range(M)
+    for j in range(M):
+        delays[i][0].append(post[i,j])
 
-s = numpy.concatenate((
-    6 * numpy.ones((Ne, M)),
-    -5 * numpy.ones((Ni, M))
-))
+s = numpy.zeros((N, N))
+for i in range(Ne):
+    s[i, post[i,:]] = 6.0
+for i in range(Ne, N):
+    s[i, post[i,:]] = -5.0
 
-firings = numpy.empty((0, 2), dtype=numpy.int)
+firings_hist = []
+firings = collections.deque(maxlen=D)
 
 for t in range(T):
     print(t)
@@ -45,31 +49,32 @@ for t in range(T):
     fired = fired.reshape((len(fired), 1))
 
     if fired.size > 0:
-        firings = numpy.vstack((
-            firings,
-            numpy.hstack((
-                t * numpy.ones_like(fired),
-                fired
-            ))
-        ))
-
         network.v[fired] = -65.0
         network.u[fired] += network.d[fired]
 
-    k = firings.shape[0] - 1
-    while k >= 0 and firings[k, 0] > (t - D):
-        time, f_index = firings[k]
-        synapses = delays[f_index][t - time]
-        if len(synapses) > 0:
-            ind = post[f_index, synapses]
-            network.I[ind] += s[f_index, synapses].reshape((len(ind), 1))
-        k -= 1
+    firings.appendleft(fired)
+    for time in range(len(firings)):
+        for fired_neuron in firings[time]:
+            post_neurons = delays[fired_neuron][time]
+            if len(post_neurons) > 0:
+                network.I[post_neurons] += \
+                    s[fired_neuron, post_neurons].reshape(
+                        (len(post_neurons), 1))
 
     network.update_potentials()
 
+    if fired.size > 0:
+        firings_hist.append((t, fired))
+
+x = []
+y = []
+for p in firings_hist:
+    for fired in p[1]:
+        x.append(p[0])
+        y.append(fired)
+
 plt.scatter(
-    firings[:,0],
-    firings[:,1],
+    x, y,
     color="black",
     marker=".")
 plt.show()
