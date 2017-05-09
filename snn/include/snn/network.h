@@ -22,6 +22,7 @@ namespace snn {
     private:
         void initialize_post_synaptic_connections();
         void initialize_delays();
+        void initialize_synaptic_weights();
 
     protected:
         std::default_random_engine m_random_engine;

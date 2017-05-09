@@ -43,15 +43,7 @@ namespace snn {
 
         initialize_post_synaptic_connections();
         initialize_delays();
-
-        // initialize matrix of synaptic strength
-        for (int i = 0; i < m_N; ++ i)
-        {
-            for (int j = 0; j < m_Ne; ++ j)
-                m_s(i, j) = 0.25;
-            for (int j = m_Ne; j < m_N; ++ j)
-                m_s(i, j) = -0.5;
-        }
+        initialize_synaptic_weights();
 
         // initialize vectors v and u
         m_v = m_c;
@@ -111,6 +103,29 @@ namespace snn {
             {
                 const int post_neuron = m_post[i][j];
                 m_delays[i][0].push_back(post_neuron);
+            }
+        }
+    }
+
+    void network::initialize_synaptic_weights()
+    {
+        m_s = arma::zeros(m_N, m_N);
+
+        for (int i = 0; i < m_Ne; ++ i)
+        {
+            for (int j = 0; j < m_M; ++ j)
+            {
+                const int neuron = m_post[i][j];
+                m_s(i, neuron) = 6.0;
+            }
+        }
+
+        for (int i = m_Ne; i < m_N; ++ i)
+        {
+            for (int j = 0; j < m_M; ++ j)
+            {
+                const int neuron = m_post[i][j];
+                m_s(i, neuron) = -5.0;
             }
         }
     }
