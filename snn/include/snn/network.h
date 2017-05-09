@@ -11,6 +11,8 @@ namespace snn {
     {
     public:
         void generate_random_input();
+        void find_fired_neurons();
+        void reset_fired_neurons();
         void process_firings();
         void update_potentials();
 

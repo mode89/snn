@@ -16,7 +16,11 @@ BOOST_PYTHON_MODULE(snn)
         .add_property("fired", &snn::python::network::get_fired)
         .def("generate_random_input",
             &snn::python::network::generate_random_input)
-        .def("update_potentials", &snn::python::network::update_potentials)
+        .def("find_fired_neurons",
+            &snn::python::network::find_fired_neurons)
+        .def("reset_fired_neurons",
+            &snn::python::network::reset_fired_neurons)
         .def("process_firings", &snn::python::network::process_firings)
+        .def("update_potentials", &snn::python::network::update_potentials)
     ;
 }

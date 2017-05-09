@@ -45,12 +45,9 @@ for t in range(T):
     network.I[:] = numpy.zeros((N, 1))
     network.I[int(N * random.random())] = 20.0
 
-    fired = numpy.argwhere(network.v >= 30)[:,0]
-    fired = fired.reshape((len(fired), 1))
-
-    if fired.size > 0:
-        network.v[fired] = -65.0
-        network.u[fired] += network.d[fired]
+    network.find_fired_neurons()
+    fired = numpy.copy(network.fired)
+    network.reset_fired_neurons()
 
     firings.appendleft(fired)
     for time in range(len(firings)):

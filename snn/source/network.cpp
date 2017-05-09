@@ -60,7 +60,7 @@ namespace snn {
             m_I[i] = dist(m_random_engine);
     }
 
-    void network::process_firings()
+    void network::find_fired_neurons()
     {
         m_fired.clear();
 
@@ -68,7 +68,10 @@ namespace snn {
         for (int i = 0; i < m_N; ++ i)
             if (m_v[i] >= 30.0)
                 m_fired.push_back(i);
+    }
 
+    void network::reset_fired_neurons()
+    {
         // reset potential of fired neurons
         for (int i, n = m_fired.size(); i < n; ++ i)
         {
@@ -76,6 +79,12 @@ namespace snn {
             m_v[index] = m_c[index];
             m_u[index] += m_d[index];
         }
+    }
+
+    void network::process_firings()
+    {
+        find_fired_neurons();
+        reset_fired_neurons();
 
         // update input current
         if (!m_fired.empty())
