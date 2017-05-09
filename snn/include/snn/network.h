@@ -21,6 +21,7 @@ namespace snn {
 
     private:
         void initialize_post_synaptic_connections();
+        void initialize_delays();
 
     protected:
         std::default_random_engine m_random_engine;
@@ -28,6 +29,7 @@ namespace snn {
         int m_Ne;
         int m_Ni;
         int m_M;
+        int m_D;
         arma::vec m_a;
         arma::vec m_b;
         arma::vec m_c;
@@ -38,6 +40,7 @@ namespace snn {
         arma::vec m_I;
         std::vector<int> m_fired;
         std::vector<std::vector<int>> m_post;
+        std::vector<std::vector<std::vector<int>>> m_delays;
     };
 
 } // namespace snn

@@ -8,6 +8,7 @@ namespace snn {
         , m_Ne(N * 0.8)
         , m_Ni(m_N - m_Ne)
         , m_M(m_N * 0.1)
+        , m_D(20)
         , m_a(N)
         , m_b(N)
         , m_c(N)
@@ -18,6 +19,7 @@ namespace snn {
         , m_I(N)
         , m_fired(N)
         , m_post()
+        , m_delays()
     {
         // initialize vector a
         for (int i = 0; i < m_Ne; ++ i)
@@ -40,6 +42,7 @@ namespace snn {
             m_d[i] = 2.0;
 
         initialize_post_synaptic_connections();
+        initialize_delays();
 
         // initialize matrix of synaptic strength
         for (int i = 0; i < m_N; ++ i)
@@ -82,6 +85,33 @@ namespace snn {
                 exitatory_indices.end(), m_random_engine);
             std::copy_n(exitatory_indices.begin(), m_M,
                 std::back_inserter(m_post[i]));
+        }
+    }
+
+    void network::initialize_delays()
+    {
+        m_delays.resize(m_N);
+        std::uniform_int_distribution<int> delay_dist(0, m_D - 1);
+
+        for (int i = 0; i < m_Ne; ++ i)
+        {
+            m_delays[i].resize(m_D);
+            for (int j = 0; j < m_M; ++ j)
+            {
+                const int delay = delay_dist(m_random_engine);
+                const int post_neuron = m_post[i][j];
+                m_delays[i][delay].push_back(post_neuron);
+            }
+        }
+
+        for (int i = m_Ne; i < m_N; ++ i)
+        {
+            m_delays[i].resize(m_D);
+            for (int j = 0; j < m_M; ++ j)
+            {
+                const int post_neuron = m_post[i][j];
+                m_delays[i][0].push_back(post_neuron);
+            }
         }
     }
 
