@@ -3,12 +3,12 @@
 
 namespace snn {
 
-    network::network(int N)
+    network::network(int N, int D)
         : m_N(N)
         , m_Ne(N * 0.8)
         , m_Ni(m_N - m_Ne)
         , m_M(m_N * 0.1)
-        , m_D(20)
+        , m_D(D)
         , m_a(N)
         , m_b(N)
         , m_c(N)
@@ -17,9 +17,10 @@ namespace snn {
         , m_v(N)
         , m_u(N)
         , m_I(N)
-        , m_fired(N)
         , m_post()
         , m_delays()
+        , m_firings(D)
+        , m_fired(m_firings.begin(), m_firings)
     {
         // initialize vector a
         for (int i = 0; i < m_Ne; ++ i)
@@ -50,7 +51,8 @@ namespace snn {
         m_u = m_b % m_v;
 
         // reserved memory for firings
-        m_fired.reserve(m_N);
+        for (auto buf: m_firings)
+            buf.reserve(m_N);
     }
 
     void network::initialize_post_synaptic_connections()
@@ -139,20 +141,23 @@ namespace snn {
 
     void network::find_fired_neurons()
     {
-        m_fired.clear();
+        // prepare the next firings' buffer
+        ++ m_fired;
+        m_fired->clear();
 
         // detect fired neurons
         for (int i = 0; i < m_N; ++ i)
             if (m_v[i] >= 30.0)
-                m_fired.push_back(i);
+                m_fired->push_back(i);
     }
 
     void network::reset_fired_neurons()
     {
         // reset potential of fired neurons
-        for (int i, n = m_fired.size(); i < n; ++ i)
+        const auto & fired = *m_fired;
+        for (int i, n = fired.size(); i < n; ++ i)
         {
-            const int index = m_fired[i];
+            const int index = fired[i];
             m_v[index] = m_c[index];
             m_u[index] += m_d[index];
         }
@@ -164,14 +169,30 @@ namespace snn {
         reset_fired_neurons();
 
         // update input current
-        if (!m_fired.empty())
+        const auto & fired = *m_fired;
+        if (!fired.empty())
             for (int i = 0; i < m_N; ++ i)
             {
                 double neuron_I = 0.0;
-                for (int j = 0, n = m_fired.size(); j < n; ++ j)
-                    neuron_I += m_s.at(i, m_fired[j]);
+                for (int j = 0, n = fired.size(); j < n; ++ j)
+                    neuron_I += m_s.at(i, fired[j]);
                 m_I[i] += neuron_I;
             }
+    }
+
+    void network::deliver_delayed_spikes()
+    {
+        auto fired_iter = m_fired;
+        for (int time = 0; time < m_D; ++ time, -- fired_iter)
+        {
+            const auto & fired = *fired_iter;
+            for (int fired_neuron: fired)
+            {
+                const auto & fired_post = m_delays[fired_neuron][time];
+                for (int post_neuron: fired_post)
+                    m_I[post_neuron] += m_s.at(fired_neuron, post_neuron);
+            }
+        }
     }
 
     void network::update_potentials()

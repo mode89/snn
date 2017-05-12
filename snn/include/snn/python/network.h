@@ -29,7 +29,7 @@ namespace snn { namespace python {
         np::ndarray get_fired();
 
     public:
-        network(int N);
+        network(int N, int D);
     };
 
 }} // namespace snn::python

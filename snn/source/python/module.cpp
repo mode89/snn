@@ -4,7 +4,7 @@ BOOST_PYTHON_MODULE(snn)
 {
     using namespace boost::python;
 
-    class_<snn::python::network>("network", init<int>())
+    class_<snn::python::network>("network", init<int, int>())
         .def_readonly("a", &snn::python::network::m_a)
         .def_readonly("b", &snn::python::network::m_b)
         .def_readonly("c", &snn::python::network::m_c)
@@ -21,6 +21,8 @@ BOOST_PYTHON_MODULE(snn)
         .def("reset_fired_neurons",
             &snn::python::network::reset_fired_neurons)
         .def("process_firings", &snn::python::network::process_firings)
+        .def("deliver_delayed_spikes",
+            &snn::python::network::deliver_delayed_spikes)
         .def("update_potentials", &snn::python::network::update_potentials)
     ;
 }

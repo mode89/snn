@@ -3,6 +3,7 @@
 
 #include <armadillo>
 #include <random>
+#include <snn/circular_iterator.h>
 #include <vector>
 
 namespace snn {
@@ -14,10 +15,11 @@ namespace snn {
         void find_fired_neurons();
         void reset_fired_neurons();
         void process_firings();
+        void deliver_delayed_spikes();
         void update_potentials();
 
     public:
-        network(int N);
+        network(int N, int D);
 
     private:
         void initialize_post_synaptic_connections();
@@ -25,6 +27,9 @@ namespace snn {
         void initialize_synaptic_weights();
 
     protected:
+        typedef std::vector<std::vector<int>> firings_type;
+        typedef circular_iterator<firings_type> firings_iterator;
+
         std::default_random_engine m_random_engine;
         int m_N;
         int m_Ne;
@@ -39,9 +44,10 @@ namespace snn {
         arma::vec m_v;
         arma::vec m_u;
         arma::vec m_I;
-        std::vector<int> m_fired;
         std::vector<std::vector<int>> m_post;
         std::vector<std::vector<std::vector<int>>> m_delays;
+        firings_type m_firings;
+        firings_iterator m_fired;
     };
 
 } // namespace snn
