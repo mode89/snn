@@ -16,20 +16,15 @@ namespace snn { namespace python {
         p::object m_numpy_memory_owner;
 
     public:
-        np::ndarray m_a;
-        np::ndarray m_b;
-        np::ndarray m_c;
-        np::ndarray m_d;
         np::ndarray m_s;
         np::ndarray m_v;
-        np::ndarray m_u;
         np::ndarray m_I;
 
     public:
         np::ndarray get_fired();
 
     public:
-        network(int N, int D);
+        network(int N);
     };
 
 }} // namespace snn::python

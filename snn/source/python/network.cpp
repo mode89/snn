@@ -15,15 +15,10 @@ namespace snn { namespace python {
 
     namespace p = boost::python;
 
-    network::network(int N, int D)
-        : snn::network(N, D)
-        , NDARRAY_MEMBER(m_a)
-        , NDARRAY_MEMBER(m_b)
-        , NDARRAY_MEMBER(m_c)
-        , NDARRAY_MEMBER(m_d)
+    network::network(int N)
+        : snn::network(N)
         , NDARRAY_MEMBER(m_s)
         , NDARRAY_MEMBER(m_v)
-        , NDARRAY_MEMBER(m_u)
         , NDARRAY_MEMBER(m_I)
     {
     }
@@ -31,9 +26,9 @@ namespace snn { namespace python {
     np::ndarray network::get_fired()
     {
         return np::from_data(
-            m_fired->data(),
+            m_fired.data(),
             np::dtype::get_builtin<int>(),
-            p::make_tuple(m_fired->size()),
+            p::make_tuple(m_fired.size()),
             p::make_tuple(sizeof(int)),
             m_numpy_memory_owner);
     }

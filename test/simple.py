@@ -3,7 +3,7 @@ import snn
 
 N = 1000
 
-network = snn.network(N, 1)
+network = snn.network(N)
 
 firings = [[], []]
 
