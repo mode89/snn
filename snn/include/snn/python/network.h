@@ -16,7 +16,7 @@ namespace snn { namespace python {
         p::object m_numpy_memory_owner;
 
     public:
-        np::ndarray m_s;
+        np::ndarray m_weight;
         np::ndarray m_v;
         np::ndarray m_I;
 

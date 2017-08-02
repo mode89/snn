@@ -17,7 +17,7 @@ namespace snn { namespace python {
 
     network::network(int N)
         : snn::network(N)
-        , NDARRAY_MEMBER(m_s)
+        , NDARRAY_MEMBER(m_weight)
         , NDARRAY_MEMBER(m_v)
         , NDARRAY_MEMBER(m_I)
     {

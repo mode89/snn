@@ -5,7 +5,7 @@ BOOST_PYTHON_MODULE(snn)
     using namespace boost::python;
 
     class_<snn::python::network>("network", init<int>())
-        .def_readwrite("s", &snn::python::network::m_s)
+        .def_readwrite("weight", &snn::python::network::m_weight)
         .def_readwrite("v", &snn::python::network::m_v)
         .def_readwrite("I", &snn::python::network::m_I)
         .add_property("fired", &snn::python::network::get_fired)

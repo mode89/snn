@@ -6,7 +6,7 @@ namespace snn {
     network::network(int N)
         : m_N(N)
         , m_M(m_N * 0.1)
-        , m_s(arma::zeros(N, N))
+        , m_weight(arma::zeros(N, N))
         , m_v(arma::zeros(N))
         , m_I(arma::zeros(N))
         , m_post(N)
@@ -35,13 +35,15 @@ namespace snn {
 
     void network::initialize_synaptic_weights()
     {
-        std::uniform_real_distribution<> dist_s(-100.0 / m_N, 100.0 / m_N);
+        std::uniform_real_distribution<>
+            dist_weight(-100.0 / m_N, 100.0 / m_N);
+
         for (int i = 0; i < m_N; ++ i)
         {
             for (int j = 0; j < m_M; ++ j)
             {
                 const int neuron = m_post[i][j];
-                m_s(i, neuron) = dist_s(m_random_engine);
+                m_weight(i, neuron) = dist_weight(m_random_engine);
             }
         }
     }
@@ -88,7 +90,7 @@ namespace snn {
             {
                 double neuron_I = 0.0;
                 for (int j = 0, n = m_fired.size(); j < n; ++ j)
-                    neuron_I += m_s.at(i, m_fired[j]);
+                    neuron_I += m_weight.at(i, m_fired[j]);
                 m_I[i] += neuron_I;
             }
     }

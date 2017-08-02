@@ -28,7 +28,7 @@ namespace snn {
         std::default_random_engine m_random_engine;
         int m_N;
         int m_M;
-        arma::mat m_s;
+        arma::mat m_weight;
         arma::vec m_v;
         arma::vec m_I;
         std::vector<std::vector<int>> m_post;
