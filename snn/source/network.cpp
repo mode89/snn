@@ -6,9 +6,9 @@ namespace snn {
     network::network(int N)
         : m_N(N)
         , m_M(m_N * 0.1)
-        , m_weight(arma::zeros(N, N))
-        , m_v(arma::zeros(N))
-        , m_I(arma::zeros(N))
+        , m_weight(arma::zeros<arma::fmat>(N, N))
+        , m_v(arma::zeros<arma::fvec>(N))
+        , m_I(arma::zeros<arma::fvec>(N))
         , m_post(N)
         , m_fired()
         , m_random_engine(0)
@@ -50,7 +50,7 @@ namespace snn {
 
     void network::generate_random_input()
     {
-        m_I = arma::zeros(m_N);
+        m_I.zeros();
         std::uniform_int_distribution<int> dist(0, m_N);
         m_I[dist(m_random_engine)] = 1.0;
     }
