@@ -17,5 +17,6 @@ BOOST_PYTHON_MODULE(snn)
             &snn::python::network::reset_fired_neurons)
         .def("process_firings", &snn::python::network::process_firings)
         .def("update_potentials", &snn::python::network::update_potentials)
+        .def("update_weights", &snn::python::network::update_weights)
     ;
 }

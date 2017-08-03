@@ -15,13 +15,14 @@ namespace snn {
         void find_fired_neurons();
         void reset_fired_neurons();
         void process_firings();
+        void update_weights();
         void update_potentials();
 
     public:
         network(int N);
 
     private:
-        void initialize_post_synaptic_connections();
+        void initialize_synaptic_connections();
         void initialize_synaptic_weights();
 
     protected:
@@ -32,7 +33,12 @@ namespace snn {
         arma::fvec m_v;
         arma::fvec m_I;
         std::vector<std::vector<int>> m_post;
+        std::vector<std::vector<int>> m_pre;
         std::vector<int> m_fired;
+        arma::fvec m_stdp;
+        arma::fmat m_weightDelta;
+        const float m_minWeight;
+        const float m_maxWeight;
     };
 
 } // namespace snn
