@@ -17,23 +17,31 @@ class WafConfigureCommand(WafCommand):
         subprocess.check_call(
             ["./waf", "--top=snn", "--out=build", "configure"])
 
-class WafBuildCommand(WafCommand):
+class WafBuildDebugCommand(WafCommand):
     def run(self):
         subprocess.check_call(
-            ["./waf", "--top=snn", "--out=build", "build"])
-        for f in glob.glob("build/python/*.so"):
+            ["./waf", "--top=snn", "--out=build", "debug"])
+        for f in glob.glob("build/debug/python/*.so"):
+            shutil.copy(f, ".")
+
+class WafBuildReleaseCommand(WafCommand):
+    def run(self):
+        subprocess.check_call(
+            ["./waf", "--top=snn", "--out=build", "release"])
+        for f in glob.glob("build/release/python/*.so"):
             shutil.copy(f, ".")
 
 class BuildExt(setuptools.command.build_ext.build_ext):
     def run(self):
         self.run_command("waf_configure")
-        self.run_command("waf_build")
+        self.run_command("waf_build_release")
 
 setup(
     name="snn",
     cmdclass={
         "waf_configure": WafConfigureCommand,
-        "waf_build": WafBuildCommand,
+        "waf_build_debug": WafBuildDebugCommand,
+        "waf_build_release": WafBuildReleaseCommand,
         "build_ext": BuildExt,
     },
 )
