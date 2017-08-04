@@ -1,0 +1,34 @@
+def options(ctx):
+    ctx.load("compiler_cxx")
+    ctx.load("boost")
+
+def configure(ctx):
+    ctx.load("compiler_cxx")
+    ctx.load("python")
+    ctx.check_python_headers()
+    ctx.load("boost")
+    ctx.check_boost("python")
+
+def build(ctx):
+    ctx(
+        target="pysnn",
+        features="cxx cxxshlib pyext",
+        source=[
+            "source/module.cpp",
+            "source/network.cpp",
+            "source/numpy_initializer.cpp",
+        ],
+        includes=[
+            ctx.path.find_dir("include"),
+        ],
+        lib=[
+            "boost_numpy",
+        ],
+        cxxflags=[
+            "-std=c++11",
+        ],
+        use=[
+            "BOOST",
+            "snn",
+        ],
+    )

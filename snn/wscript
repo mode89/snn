@@ -1,37 +1,27 @@
 def options(opt):
     opt.load("compiler_cxx")
-    opt.load("boost")
+    opt.recurse("python")
 
 def configure(conf):
     conf.load("compiler_cxx")
-
-    conf.load("python")
-    conf.check_python_headers()
-
-    conf.load("boost")
-    conf.check_boost("python")
+    conf.recurse("python")
 
 def build(bld):
     bld(
         target="snn",
-        features="cxx cxxshlib pyext",
+        features="cxx cxxshlib",
         source=[
             "source/network.cpp",
-            "source/python/module.cpp",
-            "source/python/network.cpp",
-            "source/python/numpy_initializer.cpp",
         ],
         includes=[
             bld.path.find_dir("include"),
-            "/opt/Armadillo/include",
         ],
-        lib=[
-            "boost_numpy",
+        export_includes=[
+            bld.path.find_dir("include"),
         ],
         cxxflags=[
             "-std=c++11",
         ],
-        use=[
-            "BOOST",
-        ],
     )
+
+    bld.recurse("python")

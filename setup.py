@@ -21,7 +21,7 @@ class WafBuildCommand(WafCommand):
     def run(self):
         subprocess.check_call(
             ["./waf", "--top=snn", "--out=build", "build"])
-        for f in glob.glob("build/*.so"):
+        for f in glob.glob("build/python/*.so"):
             shutil.copy(f, ".")
 
 class BuildExt(setuptools.command.build_ext.build_ext):

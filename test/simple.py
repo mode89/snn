@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
-import snn
+import pysnn
 
 N = 1000
 
-network = snn.network(N)
+network = pysnn.network(N)
 
 firings = [[], []]
 

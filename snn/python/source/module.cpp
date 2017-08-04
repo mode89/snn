@@ -1,6 +1,6 @@
 #include <snn/python/network.h>
 
-BOOST_PYTHON_MODULE(snn)
+BOOST_PYTHON_MODULE(pysnn)
 {
     using namespace boost::python;
 
