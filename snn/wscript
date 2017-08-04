@@ -1,9 +1,11 @@
 def options(opt):
     opt.load("compiler_cxx")
     opt.recurse("python")
+    opt.recurse("tests")
 
 def configure(conf):
     conf.recurse("python")
+    conf.recurse("tests")
     base_env = conf.env.derive()
 
     conf.setenv("debug", base_env)
@@ -31,8 +33,8 @@ def build(bld):
             "-std=c++11",
         ],
     )
-
     bld.recurse("python")
+    bld.recurse("tests")
 
 from waflib.Build import BuildContext
 class debug(BuildContext):
