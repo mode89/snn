@@ -10,6 +10,7 @@ def build(bld):
         features="cxx cxxprogram",
         source=[
             "main.cpp",
+            "snn.cpp"
         ],
         lib=[
             "gtest",
