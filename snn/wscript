@@ -21,6 +21,8 @@ def build(bld):
         target="snn",
         features="cxx cxxshlib",
         source=[
+            "source/connections.cpp",
+            "source/group.cpp",
             "source/network.cpp",
         ],
         includes=[

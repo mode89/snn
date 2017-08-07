@@ -1,0 +1,47 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "python simple",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/usr/bin/python",
+            "args": ["test/simple.py"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [
+                { "name" : "LD_LIBRARY_PATH", "value" : "${workspaceRoot}/build/debug" }
+            ],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "tests",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/build/debug/tests/snn-tests",
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceRoot}",
+            "environment": [
+                { "name" : "LD_LIBRARY_PATH", "value" : "${workspaceRoot}/build/debug" }
+            ],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}
